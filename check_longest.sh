@@ -24,3 +24,4 @@ echo "Max request time is: "$max_time
 echo "Request is:"
 prev_line=$[$max_line_num - 1]
 sed -n "$prev_line,${max_line_num}p" $filename
+
