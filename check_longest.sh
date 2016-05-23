@@ -3,9 +3,9 @@
 filename=$1
 comp_reg_ex=":Completed.*[0-9]*ms.*"
 time_regex="[0-9]*ms.*"
-line_num=1
 max_time=-1
-max_line_num=-1
+prev=""
+cur_prev=""
 while read -r line
 do
   if [[ $line =~ $comp_reg_ex ]]
@@ -14,14 +14,12 @@ do
     if [[ $max_time -lt $completion_time ]]
       then 
       max_time=$completion_time
-      max_line_num=$line_num
+      cur_prev=$prev
     fi
   fi
-  line_num=$[$line_num + 1]
+  prev=$line
 done < "$filename"
 
-echo "Max request time is: "$max_time
+echo "Max request time is: "$max_time"ms"
 echo "Request is:"
-prev_line=$[$max_line_num - 1]
-sed -n "$prev_line,${max_line_num}p" $filename
-
+echo $cur_prev | grep -o "Started.*" | sed 's/Started.//g' | sed 's/for.*//g'
